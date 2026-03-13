@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي الشبح بالصوت - ساهر</title>
+    <title>تحدي الـ 20 شبح - ساهر</title>
     <style>
-        :root { --neon-purple: #bc13fe; }
+        :root { 
+            --neon-purple: #bc13fe; 
+        }
+        
         body {
             margin: 0;
             background: #000;
@@ -16,6 +19,7 @@
             user-select: none;
             touch-action: none;
         }
+        
         .header {
             background: #111;
             padding: 15px;
@@ -25,7 +29,14 @@
             font-size: 1.2rem;
             box-shadow: 0 0 20px rgba(188, 19, 254, 0.6);
         }
-        #score { color: var(--neon-purple); font-weight: bold; font-size: 1.5rem; text-shadow: 0 0 10px var(--neon-purple); }
+        
+        #score { 
+            color: var(--neon-purple); 
+            font-weight: bold; 
+            font-size: 1.5rem; 
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+        
         #ghost {
             position: absolute;
             font-size: 60px;
@@ -33,6 +44,7 @@
             filter: drop-shadow(0 0 15px var(--neon-purple));
             z-index: 100;
         }
+        
         .overlay {
             position: fixed;
             top: 50%;
@@ -45,11 +57,25 @@
             z-index: 1000;
             width: 80%;
             max-width: 320px;
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.4);
         }
+        
+        h1 {
+            color: var(--neon-purple);
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+        
         button {
             background: var(--neon-purple);
-            color: white; border: none; padding: 15px 30px; font-size: 1.2rem;
-            font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 0 15px var(--neon-purple);
         }
     </style>
 </head>
@@ -61,33 +87,24 @@
     </div>
 
     <div id="start-screen" class="overlay">
-        <h1 style="color: var(--neon-purple);">تحدي الأشباح 👻</h1>
-        <p>الهدف: 20 نقطة<br>الوقت: 15 دقيقة<br>اسمع صوت الصيد! 🔊</p>
-        <button onclick="startGame()">ابدأ اللعب يا ساهر 🏹</button>
+        <h1>مهمة الـ 20 شبح 👻</h1>
+        <p>الهدف: اصطاد 20 شبح<br>الوقت: 15 دقيقة<br>السرعة: 500ms</p>
+        <button onclick="startGame()">ابدأ لتحدي يا بطل 🏹</button>
     </div>
 
     <div id="ghost" style="display: none;">👻</div>
-
-    <audio id="hitSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-    <audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
-    <audio id="loseSound" src="https://assets.mixkit.co/active_storage/sfx/2513/2513-preview.mp3"></audio>
 
     <script>
         let score = 0;
         let totalSeconds = 15 * 60; 
         let gameInterval;
         let autoMove;
-        const targetScore = 20;
+        const targetScore = 20; // التعديل هنا لـ 20 نقطة
         
         const ghostEl = document.getElementById('ghost');
         const scoreEl = document.getElementById('score');
         const timerEl = document.getElementById('timer');
         const startScreen = document.getElementById('start-screen');
-        
-        // جلب عناصر الصوت
-        const hitSound = document.getElementById('hitSound');
-        const winSound = document.getElementById('winSound');
-        const loseSound = document.getElementById('loseSound');
 
         function moveGhost() {
             const maxX = window.innerWidth - 80;
@@ -100,20 +117,18 @@
 
         function hit(e) {
             if(e) e.preventDefault();
-            
-            // تشغيل صوت الخبطة
-            hitSound.currentTime = 0;
-            hitSound.play();
-            
             score++;
             scoreEl.innerText = score;
             
-            if (score >= targetScore) winGame();
-            else moveGhost();
+            if (score >= targetScore) {
+                winGame();
+            } else {
+                moveGhost();
+            }
         }
 
-        ghostEl.addEventListener('touchstart', hit);
         ghostEl.addEventListener('mousedown', hit);
+        ghostEl.addEventListener('touchstart', hit);
 
         function updateTimerDisplay() {
             let mins = Math.floor(totalSeconds / 60);
@@ -144,12 +159,11 @@
         function winGame() {
             clearInterval(gameInterval);
             clearInterval(autoMove);
-            winSound.play(); // صوت الفوز
             ghostEl.style.display = 'none';
             startScreen.style.display = 'block';
             startScreen.innerHTML = `
-                <h1 style="color: var(--neon-purple);">وحش الأشباح! 🏆</h1>
-                <p>صيدت الـ 20 بنجاح يا ساهر.</p>
+                <h1 style="color: var(--neon-purple);">تمت المهمة! 🏆</h1>
+                <p>عاش يا ساهر! صيدت الـ 20 شبح.</p>
                 <button onclick="location.reload()">لعب تاني 🔄</button>
             `;
         }
@@ -157,11 +171,11 @@
         function endGame() {
             clearInterval(gameInterval);
             clearInterval(autoMove);
-            loseSound.play(); // صوت الخسارة
             ghostEl.style.display = 'none';
             startScreen.style.display = 'block';
             startScreen.innerHTML = `
-                <h1 style="color: #ff0000;">انتهى الوقت!</h1>
+                <h1 style="color: #ff0000;">خلص الوقت!</h1>
+                <p>جبت ${score} من 20.</p>
                 <button onclick="location.reload()">حاول تاني 💪</button>
             `;
         }
